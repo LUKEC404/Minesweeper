@@ -1,0 +1,191 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  background-color: #7c747a;
+}
+
+hr {
+  color: black;
+  width: 500px;
+}
+.frame {
+  background-color: #7c747a;
+}
+#customizer {
+  background-color: #747a7c;
+  border: 2px solid black;
+  align-content: center;
+  margin: 0 auto;
+  width: 500px;
+}
+#numbersection {
+  display: flex;
+  color: white;
+  font-weight: bold;
+}
+input[type="number"] {
+  background-color: #747a7c;
+  outline: 1px solid blck;
+  width: 150px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* CSS */
+.change {
+  align-items: center;
+  background-color: #747a7c;
+  border: 2px solid black;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 5px;
+  min-height: 3rem;
+  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+
+.change:hover,
+.change:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.change:hover {
+  transform: translateY(-1px);
+}
+
+.change:active {
+  background-color: #f0f0f1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+#grid {
+  background-color: #747a7c;
+  border: 2px solid black;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
+  grid-gap: 0px;
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tile {
+  width: 25px;
+  height: 25px;
+  outline: 1px solid black;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blank {
+  background-color: #747c77;
+  outline: 1px solid black;
+}
+
+.x1 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: aqua;
+}
+.x2 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: blue;
+}
+.x3 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: pink;
+}
+.x4 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: red;
+}
+.x5 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: darkred;
+}
+.x6 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: orangered;
+}
+.x7 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: brown;
+}
+.x8 {
+  background-color: #747c77;
+  outline: 1px solid black;
+  color: darkmagenta;
+}
+.bomb {
+  background-color: #747c77;
+  outline: 1px solid black;
+}
+.red {
+  background-color: red;
+  outline: 1px solid black;
+}
