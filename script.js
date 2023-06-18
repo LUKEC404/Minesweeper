@@ -5,7 +5,6 @@ const gridContainer = document.getElementById("grid");
 const bombEmoji = "\uD83D\uDCA3";
 const flagEmoji = "\ud83d\udea9";
 
-
 let board = [];
 let flagAmount = 0;
 let rows = 0;
