@@ -1,191 +1,146 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
-  background-color: #7c747a;
+  background-color: #c0c0c0;
+  margin: 0;
+  padding: 20px;
 }
 
-hr {
-  color: black;
-  width: 500px;
-}
-.frame {
-  background-color: #7c747a;
-}
 #customizer {
-  background-color: #747a7c;
-  border: 2px solid black;
-  align-content: center;
-  margin: 0 auto;
+  background-color: #c0c0c0;
+  border: 3px solid white;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  margin: 0 auto 20px;
   width: 500px;
+  padding: 15px;
 }
+
 #numbersection {
   display: flex;
-  color: white;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#numbersection div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-weight: bold;
 }
+
 input[type="number"] {
-  background-color: #747a7c;
-  outline: 1px solid blck;
-  width: 150px;
-  color: white;
-  font-weight: bold;
+  width: 60px;
+  padding: 3px;
   text-align: center;
 }
 
-/* CSS */
 .change {
-  align-items: center;
-  background-color: #747a7c;
-  border: 2px solid black;
-  border-radius: 0.25rem;
-  box-sizing: border-box;
-  color: white;
+  background-color: #c0c0c0;
+  border: 2px solid white;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  font-weight: bold;
+  padding: 5px 15px;
   cursor: pointer;
-  display: inline-flex;
-  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  justify-content: center;
-  line-height: 1.25;
-  margin: 5px;
-  min-height: 3rem;
-  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
-  position: relative;
-  text-decoration: none;
-  transition: all 250ms;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: baseline;
-  width: auto;
-}
-
-.change:hover,
-.change:focus {
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-  color: rgba(0, 0, 0, 0.65);
-}
-
-.change:hover {
-  transform: translateY(-1px);
 }
 
 .change:active {
-  background-color: #f0f0f1;
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
-  color: rgba(0, 0, 0, 0.65);
-  transform: translateY(0);
+  border: 2px solid #808080;
+  border-right-color: white;
+  border-bottom-color: white;
+}
+
+.frame {
+  display: flex;
+  justify-content: center;
 }
 
 #grid {
-  background-color: #747a7c;
-  border: 2px solid black;
-  margin: 0 auto;
+  background-color: #808080;
+  border: 3px solid #808080;
+  border-right-color: white;
+  border-bottom-color: white;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25px, 1fr));
-  grid-gap: 0px;
-}
-
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
 }
 
 .tile {
   width: 25px;
   height: 25px;
-  outline: 1px solid black;
-  font-size: 15px;
+  background-color: #c0c0c0;
+  border: 3px solid white;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  font-size: 16px;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 0;
+  margin: 0;
 }
 
-.blank {
-  background-color: #747c77;
-  outline: 1px solid black;
+.tile.revealed {
+  border: 1px solid #808080;
+  background-color: #c0c0c0;
 }
 
-.x1 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: aqua;
+.tile.bomb {
+  background-color: #c0c0c0;
+  border: 1px solid #808080;
 }
-.x2 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: blue;
-}
-.x3 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: pink;
-}
-.x4 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: red;
-}
-.x5 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: darkred;
-}
-.x6 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: orangered;
-}
-.x7 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: brown;
-}
-.x8 {
-  background-color: #747c77;
-  outline: 1px solid black;
-  color: darkmagenta;
-}
-.bomb {
-  background-color: #747c77;
-  outline: 1px solid black;
-}
-.red {
+
+.tile.red {
   background-color: red;
-  outline: 1px solid black;
+}
+
+.x1 { color: #0000FF; }
+.x2 { color: #008000; }
+.x3 { color: #FF0000; }
+.x4 { color: #00008B; }
+.x5 { color: #8B0000; }
+.x6 { color: #00FFFF; }
+.x7 { color: #000000; }
+.x8 { color: #808080; }
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #c0c0c0;
+  margin: 15% auto;
+  padding: 20px;
+  border: 3px solid white;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  width: 250px;
+}
+
+.close {
+  color: #000;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 20px;
+}
+
+.close:hover {
+  color: #666;
 }

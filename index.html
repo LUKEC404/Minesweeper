@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello minesweeper</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="customizer">
-      <div id="numbersection">
-        <div>rows:<input type="number"  value="25" id="rows" /></div>
-        <div>columns:<input type="number" value="25" id="columns" /></div>
-        <div>bombs:<input type="number" value="25" id="bombs" /></div>
-      </div>
-      <span class="change" onclick="changeValue()">Change Values</span>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minesweeper</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="customizer">
+    <div id="numbersection">
+      <div><label for="rows">rows:</label><input type="number" value="10" id="rows" min="1" max="50" /></div>
+      <div><label for="columns">columns:</label><input type="number" value="10" id="columns" min="1" max="50" /></div>
+      <div><label for="bombs">bombs:</label><input type="number" value="10" id="bombs" min="1" /></div>
     </div>
-    <hr />
-    <div class="frame">
-      <div id="grid" style="width: 0px; height: 0px"></div>
-    </div>
+    <button class="change">New Game</button>
+  </div>
+  
+  <div class="frame">
+    <div id="grid"></div>
+  </div>
 
-    <div id="win" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeWin()">&times;</span>
-        <p>You win</p>
-      </div>
+  <div id="win" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>You Win!</p>
     </div>
-    <div id="lose" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeLose()">&times;</span>
-        <p>You Lose</p>
-      </div>
+  </div>
+  
+  <div id="lose" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>You Lose!</p>
+    </div>
+  </div>
 
-    <script src="script.js"></script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>

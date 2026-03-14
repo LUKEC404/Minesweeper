@@ -2,242 +2,214 @@ const columnsInput = document.getElementById("columns");
 const rowsInput = document.getElementById("rows");
 const bombsInput = document.getElementById("bombs");
 const gridContainer = document.getElementById("grid");
-const bombEmoji = "\uD83D\uDCA3";
-const flagEmoji = "\ud83d\udea9";
+const winModal = document.getElementById("win");
+const loseModal = document.getElementById("lose");
+
+const BOMB = -1;
+const TILE_SIZE = 25;
 
 let board = [];
-let flagAmount = 0;
+let revealed = [];
+let flagged = [];
 let rows = 0;
 let columns = 0;
 let numMines = 0;
+let gameOver = false;
+let firstClick = true;
 
-function startup() {
-  clearGrid();
+function init() {
+  rows = parseInt(rowsInput.value) || 10;
+  columns = parseInt(columnsInput.value) || 10;
+  numMines = parseInt(bombsInput.value) || 10;
+
+  rows = Math.max(1, Math.min(rows, 50));
+  columns = Math.max(1, Math.min(columns, 50));
+  numMines = Math.max(1, Math.min(numMines, rows * columns - 9));
+
+  rowsInput.value = rows;
+  columnsInput.value = columns;
+  bombsInput.value = numMines;
+
   board = [];
-  flagAmount = 0;
-  spawnBoard();
+  revealed = [];
+  flagged = [];
+  gameOver = false;
+  firstClick = true;
+
+  for (let r = 0; r < rows; r++) {
+    board[r] = [];
+    revealed[r] = [];
+    flagged[r] = [];
+    for (let c = 0; c < columns; c++) {
+      board[r][c] = 0;
+      revealed[r][c] = false;
+      flagged[r][c] = false;
+    }
+  }
+
   createGrid();
 }
 
-function clearGrid() {
-  const containerDiv = document.querySelector("#grid");
-  const divsToRemove = containerDiv.querySelectorAll("div");
+function placeMines(excludeRow, excludeCol) {
+  let placed = 0;
+  while (placed < numMines) {
+    const r = Math.floor(Math.random() * rows);
+    const c = Math.floor(Math.random() * columns);
+    if (board[r][c] !== BOMB && (r !== excludeRow || c !== excludeCol)) {
+      board[r][c] = BOMB;
+      placed++;
+    }
+  }
 
-  divsToRemove.forEach((div) => {
-    containerDiv.removeChild(div);
-  });
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (board[r][c] !== BOMB) {
+        board[r][c] = countAdjacentMines(r, c);
+      }
+    }
+  }
 }
 
-function changeValue() {
-  columns = columnsInput.value;
-  rows = rowsInput.value;
-  numMines = bombsInput.value;
-  startup();
+function countAdjacentMines(row, col) {
+  let count = 0;
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const nr = row + dr;
+      const nc = col + dc;
+      if (nr >= 0 && nr < rows && nc >= 0 && nc < columns && board[nr][nc] === BOMB) {
+        count++;
+      }
+    }
+  }
+  return count;
 }
-
-window.onload = function () {
-  startup();
-};
 
 function createGrid() {
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const box = document.createElement("div");
-      box.id = `${row}-${col}`;
-      box.classList.add("tile");
-      box.addEventListener("click", onTileClicked);
-      gridContainer.append(box);
+  gridContainer.innerHTML = "";
+  gridContainer.style.gridTemplateColumns = `repeat(${columns}, ${TILE_SIZE}px)`;
+  gridContainer.style.width = `${columns * TILE_SIZE}px`;
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const tile = document.createElement("div");
+      tile.id = `${r}-${c}`;
+      tile.classList.add("tile");
+      tile.addEventListener("click", handleClick);
+      tile.addEventListener("contextmenu", handleRightClick);
+      gridContainer.appendChild(tile);
     }
   }
 }
 
-function spawnBoard() {
-  // Initialize the board
-  for (let i = 0; i < rows; i++) {
-    board[i] = [];
-    for (let j = 0; j < columns; j++) {
-      board[i][j] = 0; // 0 represents no mine, 1 represents mine
-    }
+function handleClick(e) {
+  if (gameOver) return;
+  
+  const tile = e.target;
+  const [row, col] = tile.id.split("-").map(Number);
+
+  if (flagged[row][col] || revealed[row][col]) return;
+
+  if (firstClick) {
+    placeMines(row, col);
+    firstClick = false;
   }
-  // Add mines to the board
-  let count = 0;
-  while (count < numMines) {
-    let row = Math.floor(Math.random() * rows);
-    let col = Math.floor(Math.random() * columns);
-    if (board[row][col] === 0) {
-      // if there is no mine already
-      board[row][col] = bombEmoji; // add a mine
-      count++;
-    }
-  }
-  const frame = document.getElementById("grid");
-  frame.style.width = 25 * columns + "px";
-  frame.style.height = 25 * rows + "px";
-  addValues();
+
+  revealTile(row, col);
+  checkWin();
 }
 
-function addValues() {
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      if (board[row][col] === bombEmoji) {
-        incrementIfNotBomb(row - 1, col);
-        incrementIfNotBomb(row, col - 1);
-        incrementIfNotBomb(row - 1, col - 1);
-        incrementIfNotBomb(row + 1, col);
-        incrementIfNotBomb(row, col + 1);
-        incrementIfNotBomb(row + 1, col + 1);
-        incrementIfNotBomb(row + 1, col - 1);
-        incrementIfNotBomb(row - 1, col + 1);
-      }
-    }
-  }
+function handleRightClick(e) {
+  e.preventDefault();
+  if (gameOver) return;
+
+  const tile = e.target;
+  const [row, col] = tile.id.split("-").map(Number);
+
+  if (revealed[row][col]) return;
+
+  flagged[row][col] = !flagged[row][col];
+  tile.textContent = flagged[row][col] ? "🚩" : "";
 }
 
-function incrementIfNotBomb(row, col) {
-  const rowExists = row >= 0 && row < board.length;
-  const colExists = col >= 0 && col < board[0].length;
-  const isNotBomb = rowExists && colExists && board[row][col] !== bombEmoji;
+function revealTile(row, col) {
+  if (row < 0 || row >= rows || col < 0 || col >= columns) return;
+  if (revealed[row][col] || flagged[row][col]) return;
 
-  if (isNotBomb) {
-    board[row][col]++;
-  }
-}
-
-function findBlank(row, col) {
-  row = Number(row);
-  col = Number(col);
-
-  if (row + 1 < board.length && col + 1 && board.length) {
-    fillBlanks(row + 1, col + 1);
-  }
-  if (row + 1 < board.length) {
-    fillBlanks(row + 1, col);
-  }
-  if (col + 1 < board.length) {
-    fillBlanks(row, col + 1);
-  }
-  if (row - 1 >= 0 && col - 1 >= 0) {
-    fillBlanks(row - 1, col - 1);
-  }
-  if (row - 1 >= 0) {
-    fillBlanks(row - 1, col);
-  }
-  if (col - 1 >= 0) {
-    fillBlanks(row, col - 1);
-  }
-  if (row + 1 < board.length && col - 1 >= 0) {
-    fillBlanks(row + 1, col - 1);
-  }
-  if (row - 1 >= 0 && col + 1 < board.length) {
-    fillBlanks(row - 1, col + 1);
-  }
-}
-
-function fillBlanks(row, col) {
-  const value = board[row][col];
+  revealed[row][col] = true;
   const tile = document.getElementById(`${row}-${col}`);
+  tile.classList.add("revealed");
 
-  if (tile !== null) {
-    if (value == 0 && !tile.classList.contains("blank")) {
-      tile.innerText = "";
-      tile.classList.add("blank");
-      tile.removeEventListener("click", onTileClicked);
-      findBlank(row, col);
-    } else {
-      if (!tile.classList.contains("blank") && value !== bombEmoji) {
-        tile.innerText = value;
-        tile.classList.add("x" + value.toString());
-        tile.removeEventListener("click", onTileClicked);
-      }
-    }
+  const value = board[row][col];
+  
+  if (value === BOMB) {
+    tile.textContent = "💣";
+    tile.classList.add("bomb", "red");
+    endGame(false);
+    return;
   }
-}
 
-function gameOver() {
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const tile = document.getElementById(`${row}-${col}`);
-      const value = board[row][col];
-
-      if (tile !== null) {
-        if (value === 0) {
-          tile.innerText = "";
-          tile.classList.add("blank");
-        } else if (value === bombEmoji) {
-          tile.classList.add("bombEmoji");
-          tile.classList.add("red");
-          tile.innerText = value;
-        } else {
-          tile.innerText = value;
-        }
-        tile.classList.add("x" + board[row][col].toString());
-        tile.removeEventListener("click", onTileClicked);
-      }
-    }
-  }
-  document.getElementById("lose").style.display = "block";
-}
-
-function win() {
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < columns; col++) {
-      const tile = document.getElementById(`${row}-${col}`);
-      const value = board[row][col];
-
-      if (tile !== null) {
-        if (value === 0) {
-          tile.innerText = "";
-          tile.classList.add("blank");
-        } else if (value === bombEmoji) {
-          tile.classList.add("bombEmoji");
-          tile.classList.add("red");
-          tile.innerText = value;
-        } else {
-          tile.innerText = value;
-        }
-        tile.classList.add("x" + board[row][col].toString());
-        tile.removeEventListener("click", onTileClicked);
-      }
-    }
-  }
-  document.getElementById("win").style.display = "block";
-}
-
-function onTileClicked(e) {
-  const tile = e.target || e.srcElement;
-  const vals = tile.id.split("-");
-  const value = board[vals[0]][vals[1]];
-
-  if (e.ctrlKey) {
-    tile.innerText = flagEmoji;
-    if (value === bombEmoji) {
-      flagAmount++;
-    }
+  if (value > 0) {
+    tile.textContent = value;
+    tile.classList.add(`x${value}`);
   } else {
-    tile.removeEventListener("click", onTileClicked);
-    const value = board[vals[0]][vals[1]];
-    if (value === 0) {
-      findBlank(vals[0], vals[1]);
-    } else if (value === bombEmoji) {
-      tile.innerText = value;
-      gameOver();
-    } else {
-      tile.classList.add("x" + board[vals[0]][vals[1]].toString());
-      tile.innerText = value;
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dr !== 0 || dc !== 0) {
+          revealTile(row + dr, col + dc);
+        }
+      }
+    }
+  }
+}
+
+function checkWin() {
+  let revealedCount = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      if (revealed[r][c]) revealedCount++;
     }
   }
 
-  if (flagAmount == numMines) {
-    win();
+  if (revealedCount === rows * columns - numMines) {
+    endGame(true);
   }
 }
 
-function closeWin() {
-  document.getElementById("win").style.display = "none";
-  startup();
+function endGame(won) {
+  gameOver = true;
+  
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      const tile = document.getElementById(`${r}-${c}`);
+      const value = board[r][c];
+      
+      if (value === BOMB && !revealed[r][c]) {
+        tile.textContent = "💣";
+        tile.classList.add("bomb");
+      }
+      tile.classList.add("revealed");
+    }
+  }
+
+  if (won) {
+    winModal.style.display = "block";
+  } else {
+    loseModal.style.display = "block";
+  }
 }
 
-function closeLose() {
-  document.getElementById("lose").style.display = "none";
-  startup();
+function closeModal() {
+  winModal.style.display = "none";
+  loseModal.style.display = "none";
+  init();
 }
+
+document.querySelector(".change").addEventListener("click", init);
+document.querySelectorAll(".close").forEach(btn => btn.addEventListener("click", closeModal));
+
+columnsInput.addEventListener("change", init);
+rowsInput.addEventListener("change", init);
+bombsInput.addEventListener("change", init);
+
+init();
